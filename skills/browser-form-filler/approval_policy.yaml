@@ -1,0 +1,16 @@
+required_for:
+  - browser.click_submit
+
+rules:
+  - description: "Navigation and reading are auto-approved"
+    tools: ["browser.navigate", "browser.get_text", "browser.screenshot"]
+    action: auto_approve
+
+  - description: "Form filling is auto-approved"
+    tools: ["browser.fill"]
+    action: auto_approve
+
+  - description: "Submit clicks require human approval"
+    tools: ["browser.click_submit"]
+    action: require_approval
+    message: "About to click submit on the form. Please review the screenshot and confirm."

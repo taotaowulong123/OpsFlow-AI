@@ -1,0 +1,52 @@
+name: browser-form-filler
+display_name: Browser Form Filler
+description: Automate browser-based form filling with field mapping, screenshot verification, and approval before submission.
+version: "0.1.0"
+category: action
+risk_level: high
+
+triggers:
+  - 填写表单
+  - 打开后台
+  - browser form
+  - fill form
+  - 自动填报
+  - 浏览器操作
+  - open console
+
+input_schema:
+  type: object
+  properties:
+    url:
+      type: string
+      description: Target page URL
+    fields:
+      type: object
+      description: Key-value pairs to fill into the form
+    selectors:
+      type: object
+      description: Optional CSS selectors for form fields
+    auto_submit:
+      type: boolean
+      default: false
+  required:
+    - url
+
+tools:
+  allow:
+    - browser.navigate
+    - browser.fill
+    - browser.click
+    - browser.screenshot
+    - browser.get_text
+
+knowledge_scope:
+  collections: []
+
+graph:
+  type: langgraph
+  entry: browser_form_flow
+
+approval:
+  required_for:
+    - browser.click_submit

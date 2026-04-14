@@ -1,10 +1,9 @@
 "use client";
 
-import { Brain, Search, Play, CheckCircle, Shield, Loader2, XCircle, Pause } from "lucide-react";
+import { Play } from "lucide-react";
 import type { RunStep } from "@/types";
 import { StepCard } from "./StepCard";
-
-const nodeOrder = ["Planner", "Retriever", "Executor", "Reviewer", "Approver"];
+import { useTranslations } from "next-intl";
 
 function TimelineConnector({ active }: { active: boolean }) {
   return (
@@ -15,11 +14,13 @@ function TimelineConnector({ active }: { active: boolean }) {
 }
 
 export function ExecutionFlow({ steps }: { steps: RunStep[] }) {
+  const t = useTranslations("taskConsole");
+
   if (steps.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-gray-500">
         <Play className="w-8 h-8 mb-3" />
-        <p className="text-sm">Run a task to see execution flow</p>
+        <p className="text-sm">{t("emptyState")}</p>
       </div>
     );
   }

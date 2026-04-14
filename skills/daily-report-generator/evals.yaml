@@ -1,0 +1,12 @@
+cases:
+  - name: basic_daily_report
+    input: "生成今天的运营日报"
+    expected:
+      must_call_tools: ["sql.query_orders", "file.generate_markdown"]
+      output_must_contain: ["report_title", "sections", "file_path"]
+
+  - name: csv_format
+    input: "生成本周数据汇总，CSV格式"
+    expected:
+      must_call_tools: ["sql.query_orders", "file.generate_csv"]
+      output_must_contain: ["file_path"]

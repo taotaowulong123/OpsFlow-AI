@@ -5,12 +5,14 @@ import { Send, Loader2 } from "lucide-react";
 import type { RunStep } from "@/types";
 import { createTask, runTask } from "@/lib/api";
 import { ExecutionFlow } from "./ExecutionFlow";
+import { useTranslations } from "next-intl";
 
 export function TaskConsole() {
   const [input, setInput] = useState("");
   const [steps, setSteps] = useState<RunStep[]>([]);
   const [running, setRunning] = useState(false);
   const esRef = useRef<EventSource | null>(null);
+  const t = useTranslations("taskConsole");
 
   async function handleRun() {
     if (!input.trim() || running) return;
@@ -59,7 +61,7 @@ export function TaskConsole() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleRun()}
-          placeholder="Describe a task to execute..."
+          placeholder={t("placeholder")}
           className="flex-1 bg-surface border border-border rounded-lg px-4 py-2.5 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-primary transition-colors"
         />
         <button
@@ -68,7 +70,7 @@ export function TaskConsole() {
           className="px-5 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/80 transition-colors disabled:opacity-50 flex items-center gap-2"
         >
           {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-          Run
+          {t("send")}
         </button>
       </div>
       <div className="flex-1 overflow-y-auto">

@@ -1,0 +1,57 @@
+name: refund-analyzer
+display_name: Refund Analyzer
+description: Analyze refund anomalies, retrieve SOP evidence, and generate an action draft with ticket.
+version: "0.1.0"
+category: domain
+risk_level: medium
+
+triggers:
+  - 退款异常
+  - 退款率
+  - refund anomaly
+  - 售后分析
+  - 退款分析
+  - 生成处理建议
+  - refund analysis
+
+input_schema:
+  type: object
+  properties:
+    date_range:
+      type: string
+      description: "Time range, e.g. '7d', '30d', '2026-04-01~2026-04-15'"
+    dimension:
+      type: string
+      enum: [product, shop, category]
+      description: Analysis dimension
+    create_ticket_draft:
+      type: boolean
+      default: true
+    open_console:
+      type: boolean
+      default: false
+  required:
+    - date_range
+
+tools:
+  allow:
+    - sql.query_refund_stats
+    - sql.query_orders
+    - rag.search_sop
+    - http.create_ticket_draft
+    - browser.open_console
+
+knowledge_scope:
+  collections:
+    - aftersales_sop
+    - refund_policy
+    - ticket_templates
+
+graph:
+  type: langgraph
+  entry: refund_analysis_flow
+
+approval:
+  required_for:
+    - http.submit_ticket
+    - browser.click_submit

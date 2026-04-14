@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "required": ["ticket_title", "priority", "category", "description", "suggested_actions"],
+  "properties": {
+    "ticket_title": {
+      "type": "string",
+      "description": "Concise title for the ticket"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "urgent"]
+    },
+    "category": {
+      "type": "string",
+      "description": "Ticket category"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description with context"
+    },
+    "suggested_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": { "type": "string" },
+          "assignee": { "type": "string" }
+        },
+        "required": ["action"]
+      }
+    }
+  }
+}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Brain, Search, Play, CheckCircle, Shield, ChevronDown, ChevronRight, Loader2, XCircle, Pause } from "lucide-react";
 import type { RunStep } from "@/types";
 import { cn, formatDuration, formatTokens } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 const nodeIcons: Record<string, React.ElementType> = {
   Planner: Brain,
@@ -31,6 +32,7 @@ function StatusIndicator({ status }: { status: string }) {
 export function StepCard({ step }: { step: RunStep }) {
   const [expanded, setExpanded] = useState(false);
   const Icon = nodeIcons[step.node_name] || Play;
+  const t = useTranslations("evidence");
 
   return (
     <div className="bg-panel border border-border rounded-lg overflow-hidden">
@@ -56,7 +58,7 @@ export function StepCard({ step }: { step: RunStep }) {
           )}
           {Object.keys(step.output_data).length > 0 && (
             <div>
-              <p className="text-xs text-gray-500 mb-1">Output</p>
+              <p className="text-xs text-gray-500 mb-1">{t("output")}</p>
               <pre className="text-xs text-gray-300 bg-surface p-2 rounded overflow-x-auto">
                 {JSON.stringify(step.output_data, null, 2)}
               </pre>
@@ -64,7 +66,7 @@ export function StepCard({ step }: { step: RunStep }) {
           )}
           {Object.keys(step.input_data).length > 0 && (
             <div>
-              <p className="text-xs text-gray-500 mb-1">Input</p>
+              <p className="text-xs text-gray-500 mb-1">{t("input")}</p>
               <pre className="text-xs text-gray-300 bg-surface p-2 rounded overflow-x-auto">
                 {JSON.stringify(step.input_data, null, 2)}
               </pre>

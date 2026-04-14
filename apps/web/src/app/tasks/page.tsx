@@ -6,6 +6,7 @@ import type { Task, RunStep } from "@/types";
 import { cn, formatDate, statusColor } from "@/lib/utils";
 import { TaskConsole } from "@/components/TaskConsole";
 import { EvidencePanel } from "@/components/EvidencePanel";
+import { useTranslations } from "next-intl";
 
 const mockTasks: Task[] = [
   { id: "1", title: "Generate quarterly report", description: "Create Q1 2026 report", status: "completed", created_at: "2026-04-15T09:00:00Z", updated_at: "2026-04-15T09:05:00Z" },
@@ -16,14 +17,14 @@ const mockTasks: Task[] = [
 export default function TasksPage() {
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [steps] = useState<RunStep[]>([]);
+  const t = useTranslations("tasks");
 
   return (
     <div className="flex gap-4 h-[calc(100vh-3rem)]">
-      {/* Task list sidebar */}
       <div className="w-64 flex-shrink-0 bg-panel border border-border rounded-lg flex flex-col">
         <div className="p-3 border-b border-border flex items-center justify-between">
-          <span className="text-sm font-medium">Tasks</span>
-          <button className="p-1 hover:bg-white/10 rounded transition-colors">
+          <span className="text-sm font-medium">{t("title")}</span>
+          <button className="p-1 hover:bg-white/10 rounded transition-colors" title={t("newTask")}>
             <Plus className="w-4 h-4 text-gray-400" />
           </button>
         </div>
@@ -48,13 +49,9 @@ export default function TasksPage() {
           ))}
         </div>
       </div>
-
-      {/* Center: Task Console */}
       <div className="flex-1 min-w-0">
         <TaskConsole />
       </div>
-
-      {/* Right: Evidence Panel */}
       <div className="w-80 flex-shrink-0">
         <EvidencePanel steps={steps} />
       </div>

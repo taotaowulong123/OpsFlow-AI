@@ -1,0 +1,22 @@
+required_for:
+  - http.submit_ticket
+  - browser.click_submit
+
+rules:
+  - description: "Read operations are auto-approved"
+    tools: ["sql.query_refund_stats", "sql.query_orders", "rag.search_sop"]
+    action: auto_approve
+
+  - description: "Draft creation is auto-approved"
+    tools: ["http.create_ticket_draft"]
+    action: auto_approve
+
+  - description: "Ticket submission requires human approval"
+    tools: ["http.submit_ticket"]
+    action: require_approval
+    message: "About to submit a ticket to the system. Please review the draft and confirm."
+
+  - description: "Browser submit actions require human approval"
+    tools: ["browser.click_submit"]
+    action: require_approval
+    message: "About to click submit in the browser. Please review the form and confirm."

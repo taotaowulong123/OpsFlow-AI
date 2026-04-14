@@ -1,0 +1,46 @@
+name: knowledge-qa
+display_name: Knowledge QA with Citations
+description: Answer questions using the knowledge base with source citations and confidence scoring.
+version: "0.1.0"
+category: domain
+risk_level: low
+
+triggers:
+  - 查知识库
+  - 知识问答
+  - knowledge query
+  - search knowledge
+  - 查文档
+  - FAQ
+  - 帮我查一下
+
+input_schema:
+  type: object
+  properties:
+    question:
+      type: string
+      description: The question to answer
+    collections:
+      type: array
+      items:
+        type: string
+      description: Optional knowledge collections to search
+  required:
+    - question
+
+tools:
+  allow:
+    - rag.search_kb
+
+knowledge_scope:
+  collections:
+    - general
+    - faq
+    - sop
+
+graph:
+  type: langgraph
+  entry: knowledge_qa_flow
+
+approval:
+  required_for: []

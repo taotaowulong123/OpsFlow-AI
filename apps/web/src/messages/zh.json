@@ -1,0 +1,138 @@
+{
+  "nav": {
+    "dashboard": "仪表盘",
+    "tasks": "任务",
+    "knowledge": "知识库",
+    "tools": "工具",
+    "runs": "运行记录",
+    "skills": "技能"
+  },
+  "dashboard": {
+    "title": "仪表盘",
+    "subtitle": "AI 任务工作区概览",
+    "totalTasks": "总任务数",
+    "successRate": "成功率",
+    "avgDuration": "平均耗时",
+    "totalTokens": "总 Token 数",
+    "quickTaskPlaceholder": "快速任务...",
+    "run": "运行",
+    "recentTasks": "最近任务"
+  },
+  "tasks": {
+    "title": "任务",
+    "newTask": "新建任务"
+  },
+  "knowledge": {
+    "title": "知识库",
+    "subtitle": "上传文档并搜索您的知识",
+    "dragDrop": "拖放文件到此处",
+    "fileTypes": "PDF、Markdown、DOCX、TXT",
+    "documents": "文档",
+    "filename": "文件名",
+    "type": "类型",
+    "size": "大小",
+    "status": "状态",
+    "date": "日期",
+    "searchKnowledge": "搜索知识",
+    "searchPlaceholder": "搜索您的文档...",
+    "search": "搜索",
+    "searchPrompt": "输入查询内容进行搜索"
+  },
+  "tools": {
+    "title": "工具",
+    "subtitle": "管理任务执行可用的工具",
+    "type": "类型",
+    "risk": "风险",
+    "enabled": "已启用"
+  },
+  "runs": {
+    "title": "运行记录",
+    "subtitle": "执行历史和追踪详情",
+    "id": "ID",
+    "task": "任务",
+    "status": "状态",
+    "started": "开始时间",
+    "tokens": "Token 数",
+    "steps": "步骤",
+    "all": "全部",
+    "completed": "已完成",
+    "executing": "执行中",
+    "failed": "失败",
+    "pending": "待处理",
+    "waitingApproval": "等待审批"
+  },
+  "common": {
+    "approve": "批准",
+    "reject": "拒绝",
+    "cancel": "取消",
+    "confirm": "确认",
+    "submit": "提交",
+    "retry": "重试",
+    "export": "导出",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "noData": "暂无数据"
+  },
+  "taskConsole": {
+    "placeholder": "描述要执行的任务...",
+    "send": "运行",
+    "executing": "执行中...",
+    "planning": "规划中",
+    "retrieving": "检索中",
+    "emptyState": "运行任务以查看执行流程"
+  },
+  "evidence": {
+    "title": "证据",
+    "evidence": "证据",
+    "tools": "工具",
+    "logs": "日志",
+    "noEvidence": "尚未检索到证据",
+    "noTools": "尚无工具调用",
+    "noLogs": "暂无日志",
+    "toolInvocation": "工具调用",
+    "output": "输出",
+    "input": "输入"
+  },
+  "approval": {
+    "title": "需要审批",
+    "approve": "批准",
+    "reject": "拒绝",
+    "reasonPlaceholder": "原因（可选）",
+    "low": "低风险",
+    "medium": "中风险",
+    "high": "高风险"
+  },
+  "execution": {
+    "planner": "规划器",
+    "retriever": "检索器",
+    "executor": "执行器",
+    "reviewer": "审查器",
+    "approver": "审批器",
+    "skillRouter": "技能路由",
+    "inProgress": "进行中",
+    "completed": "已完成",
+    "failed": "失败",
+    "waitingApproval": "等待审批"
+  },
+  "skills": {
+    "title": "技能",
+    "subtitle": "可复用的任务能力模块",
+    "syncSkills": "同步技能",
+    "test": "测试",
+    "viewRuns": "查看运行",
+    "category": "分类",
+    "riskLevel": "风险等级",
+    "version": "版本",
+    "triggers": "触发词",
+    "toolsAllowed": "允许工具",
+    "domain": "领域",
+    "action": "动作",
+    "guardrail": "护栏",
+    "composite": "组合"
+  },
+  "languageSwitcher": {
+    "en": "English",
+    "zh": "中文"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "required": ["form_url", "fields_filled", "status"],
+  "properties": {
+    "form_url": {
+      "type": "string",
+      "description": "The URL that was opened"
+    },
+    "fields_filled": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field_name": { "type": "string" },
+          "value": { "type": "string" },
+          "selector": { "type": "string" }
+        },
+        "required": ["field_name", "value"]
+      }
+    },
+    "screenshot_path": {
+      "type": "string",
+      "description": "Path to the verification screenshot"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "submitted", "failed"]
+    }
+  }
+}

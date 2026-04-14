@@ -1,0 +1,52 @@
+name: daily-report-generator
+display_name: Daily Report Generator
+description: Aggregate data and generate daily or weekly summary reports in Markdown or CSV format.
+version: "0.1.0"
+category: action
+risk_level: low
+
+triggers:
+  - 生成日报
+  - 生成周报
+  - daily report
+  - weekly report
+  - 汇总报告
+  - generate report
+  - 数据汇总
+
+input_schema:
+  type: object
+  properties:
+    period:
+      type: string
+      description: "Report period, e.g. 'today', 'this_week', '2026-04-01~2026-04-15'"
+      default: today
+    format:
+      type: string
+      enum: [markdown, csv]
+      default: markdown
+    sections:
+      type: array
+      items:
+        type: string
+      description: "Optional sections to include, e.g. ['tasks', 'anomalies', 'approvals']"
+  required:
+    - period
+
+tools:
+  allow:
+    - sql.query_orders
+    - sql.query_refund_stats
+    - file.generate_markdown
+    - file.generate_csv
+
+knowledge_scope:
+  collections:
+    - report_templates
+
+graph:
+  type: langgraph
+  entry: daily_report_flow
+
+approval:
+  required_for: []

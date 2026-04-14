@@ -5,6 +5,7 @@ import { ChevronDown, ChevronRight, Filter } from "lucide-react";
 import type { TaskRun, RunStep, TaskStatus } from "@/types";
 import { cn, formatDate, formatTokens, statusColor } from "@/lib/utils";
 import { StepCard } from "@/components/StepCard";
+import { useTranslations } from "next-intl";
 
 const mockRuns: (TaskRun & { task_title: string; steps: RunStep[] })[] = [
   {
@@ -40,6 +41,7 @@ const filterOptions: TaskStatus[] = ["completed", "executing", "failed", "pendin
 export default function RunsPage() {
   const [expandedRun, setExpandedRun] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
+  const t = useTranslations("runs");
 
   const filtered = filter === "all" ? mockRuns : mockRuns.filter((r) => r.status === filter);
 
@@ -47,70 +49,46 @@ export default function RunsPage() {
     <div className="max-w-5xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold mb-1">Runs</h1>
-          <p className="text-sm text-gray-500">Execution history and trace details</p>
+          <h1 className="text-xl font-semibold mb-1">{t("title")}</h1>
+          <p className="text-sm text-gray-500">{t("subtitle")}</p>
         </div>
         <div className="flex items-center gap-2">
           <Filter className="w-4 h-4 text-gray-500" />
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="bg-panel border border-border rounded-lg px-3 py-1.5 text-sm text-gray-300 focus:outline-none focus:border-primary"
-          >
-            <option value="all">All</option>
+          <select value={filter} onChange={(e) => setFilter(e.target.value)} className="bg-panel border border-border rounded-lg px-3 py-1.5 text-sm text-gray-300 focus:outline-none focus:border-primary">
+            <option value="all">{t("all")}</option>
             {filterOptions.map((s) => (
               <option key={s} value={s}>{s.replace("_", " ")}</option>
             ))}
           </select>
         </div>
       </div>
-
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="text-xs text-gray-500 border-b border-border">
               <th className="w-8 px-3 py-2"></th>
-              <th className="text-left px-3 py-2 font-medium">ID</th>
-              <th className="text-left px-3 py-2 font-medium">Task</th>
-              <th className="text-left px-3 py-2 font-medium">Status</th>
-              <th className="text-left px-3 py-2 font-medium">Started</th>
-              <th className="text-left px-3 py-2 font-medium">Tokens</th>
-              <th className="text-left px-3 py-2 font-medium">Steps</th>
+              <th className="text-left px-3 py-2 font-medium">{t("id")}</th>
+              <th className="text-left px-3 py-2 font-medium">{t("task")}</th>
+              <th className="text-left px-3 py-2 font-medium">{t("status")}</th>
+              <th className="text-left px-3 py-2 font-medium">{t("started")}</th>
+              <th className="text-left px-3 py-2 font-medium">{t("tokens")}</th>
+              <th className="text-left px-3 py-2 font-medium">{t("steps")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {filtered.map((run) => (
               <Fragment key={run.id}>
-                <tr
-                  onClick={() => setExpandedRun(expandedRun === run.id ? null : run.id)}
-                  className="hover:bg-white/5 transition-colors cursor-pointer"
-                >
-                  <td className="px-3 py-2.5">
-                    {expandedRun === run.id
-                      ? <ChevronDown className="w-4 h-4 text-gray-500" />
-                      : <ChevronRight className="w-4 h-4 text-gray-500" />}
-                  </td>
+                <tr onClick={() => setExpandedRun(expandedRun === run.id ? null : run.id)} className="hover:bg-white/5 transition-colors cursor-pointer">
+                  <td className="px-3 py-2.5">{expandedRun === run.id ? <ChevronDown className="w-4 h-4 text-gray-500" /> : <ChevronRight className="w-4 h-4 text-gray-500" />}</td>
                   <td className="px-3 py-2.5 text-xs text-gray-400 font-mono">{run.id}</td>
                   <td className="px-3 py-2.5 text-sm">{run.task_title}</td>
-                  <td className="px-3 py-2.5">
-                    <span className={cn("text-xs capitalize", statusColor(run.status))}>
-                      {run.status.replace("_", " ")}
-                    </span>
-                  </td>
+                  <td className="px-3 py-2.5"><span className={cn("text-xs capitalize", statusColor(run.status))}>{run.status.replace("_", " ")}</span></td>
                   <td className="px-3 py-2.5 text-xs text-gray-500">{formatDate(run.started_at)}</td>
                   <td className="px-3 py-2.5 text-xs text-gray-400">{formatTokens(run.total_tokens)}</td>
                   <td className="px-3 py-2.5 text-xs text-gray-400">{run.steps.length}</td>
                 </tr>
                 {expandedRun === run.id && (
-                  <tr>
-                    <td colSpan={7} className="px-6 py-4 bg-surface">
-                      <div className="space-y-2">
-                        {run.steps.map((step) => (
-                          <StepCard key={step.id} step={step} />
-                        ))}
-                      </div>
-                    </td>
-                  </tr>
+                  <tr><td colSpan={7} className="px-6 py-4 bg-surface"><div className="space-y-2">{run.steps.map((step) => (<StepCard key={step.id} step={step} />))}</div></td></tr>
                 )}
               </Fragment>
             ))}

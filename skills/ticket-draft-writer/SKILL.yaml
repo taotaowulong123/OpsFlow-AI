@@ -1,0 +1,49 @@
+name: ticket-draft-writer
+display_name: Ticket Draft Writer
+description: Generate structured ticket or work order drafts from context and templates.
+version: "0.1.0"
+category: action
+risk_level: medium
+
+triggers:
+  - 生成工单
+  - 创建工单
+  - 工单草稿
+  - create ticket
+  - draft ticket
+  - write ticket
+  - 生成申请单
+
+input_schema:
+  type: object
+  properties:
+    context:
+      type: string
+      description: Background context for the ticket
+    template:
+      type: string
+      description: Optional template name to use
+    priority:
+      type: string
+      enum: [low, medium, high, urgent]
+      default: medium
+  required:
+    - context
+
+tools:
+  allow:
+    - rag.search_kb
+    - http.create_ticket_draft
+
+knowledge_scope:
+  collections:
+    - ticket_templates
+    - sop
+
+graph:
+  type: langgraph
+  entry: ticket_draft_flow
+
+approval:
+  required_for:
+    - http.submit_ticket

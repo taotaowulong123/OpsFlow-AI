@@ -1,0 +1,12 @@
+cases:
+  - name: basic_ticket_draft
+    input: "根据退款分析结果生成售后处理工单"
+    expected:
+      must_call_tools: ["rag.search_kb", "http.create_ticket_draft"]
+      output_must_contain: ["ticket_title", "description", "suggested_actions"]
+
+  - name: with_template
+    input: "用标准模板创建一个物流异常工单"
+    expected:
+      must_call_tools: ["rag.search_kb"]
+      output_must_contain: ["ticket_title", "category"]

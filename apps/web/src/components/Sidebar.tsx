@@ -2,19 +2,23 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, MessageSquare, BookOpen, Wrench, History, Zap } from "lucide-react";
+import { LayoutDashboard, MessageSquare, BookOpen, Wrench, History, Zap, Puzzle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 const links = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/tasks", label: "Tasks", icon: MessageSquare },
-  { href: "/knowledge", label: "Knowledge", icon: BookOpen },
-  { href: "/tools", label: "Tools", icon: Wrench },
-  { href: "/runs", label: "Runs", icon: History },
+  { href: "/", key: "dashboard", icon: LayoutDashboard },
+  { href: "/tasks", key: "tasks", icon: MessageSquare },
+  { href: "/knowledge", key: "knowledge", icon: BookOpen },
+  { href: "/tools", key: "tools", icon: Wrench },
+  { href: "/runs", key: "runs", icon: History },
+  { href: "/skills", key: "skills", icon: Puzzle },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
+  const t = useTranslations("nav");
 
   return (
     <aside className="w-60 flex-shrink-0 bg-panel border-r border-border flex flex-col">
@@ -23,7 +27,7 @@ export function Sidebar() {
         <span className="text-lg font-semibold">OpsFlow AI</span>
       </div>
       <nav className="flex-1 px-3 space-y-1">
-        {links.map(({ href, label, icon: Icon }) => {
+        {links.map(({ href, key, icon: Icon }) => {
           const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
           return (
             <Link
@@ -37,11 +41,12 @@ export function Sidebar() {
               )}
             >
               <Icon className="w-4 h-4" />
-              {label}
+              {t(key)}
             </Link>
           );
         })}
       </nav>
+      <LanguageSwitcher />
       <div className="p-4 text-xs text-gray-500">v0.1.0</div>
     </aside>
   );

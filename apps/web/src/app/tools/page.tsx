@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Database, Globe, Monitor, FileOutput, Search, AlertTriangle } from "lucide-react";
 import type { Tool } from "@/types";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 const iconMap: Record<string, React.ElementType> = {
   "SQL Query": Database,
@@ -29,20 +30,18 @@ const mockTools: Tool[] = [
 
 export default function ToolsPage() {
   const [tools, setTools] = useState<Tool[]>(mockTools);
+  const t = useTranslations("tools");
 
   function toggleTool(id: string) {
-    setTools((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, enabled: !t.enabled } : t))
-    );
+    setTools((prev) => prev.map((t) => (t.id === id ? { ...t, enabled: !t.enabled } : t)));
   }
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
-        <h1 className="text-xl font-semibold mb-1">Tools</h1>
-        <p className="text-sm text-gray-500">Manage available tools for task execution</p>
+        <h1 className="text-xl font-semibold mb-1">{t("title")}</h1>
+        <p className="text-sm text-gray-500">{t("subtitle")}</p>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {tools.map((tool) => {
           const Icon = iconMap[tool.name] || Search;
@@ -54,15 +53,9 @@ export default function ToolsPage() {
                 </div>
                 <button
                   onClick={() => toggleTool(tool.id)}
-                  className={cn(
-                    "w-10 h-5 rounded-full transition-colors relative",
-                    tool.enabled ? "bg-primary" : "bg-gray-600"
-                  )}
+                  className={cn("w-10 h-5 rounded-full transition-colors relative", tool.enabled ? "bg-primary" : "bg-gray-600")}
                 >
-                  <div className={cn(
-                    "w-4 h-4 bg-white rounded-full absolute top-0.5 transition-transform",
-                    tool.enabled ? "translate-x-5" : "translate-x-0.5"
-                  )} />
+                  <div className={cn("w-4 h-4 bg-white rounded-full absolute top-0.5 transition-transform", tool.enabled ? "translate-x-5" : "translate-x-0.5")} />
                 </button>
               </div>
               <div>
@@ -70,9 +63,7 @@ export default function ToolsPage() {
                 <p className="text-xs text-gray-400 leading-relaxed">{tool.description}</p>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs px-2 py-0.5 rounded-full bg-surface text-gray-400">
-                  {tool.tool_type}
-                </span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-surface text-gray-400">{tool.tool_type}</span>
                 <span className={cn("text-xs px-2 py-0.5 rounded-full flex items-center gap-1", riskColors[tool.risk_level])}>
                   <AlertTriangle className="w-3 h-3" />
                   {tool.risk_level}

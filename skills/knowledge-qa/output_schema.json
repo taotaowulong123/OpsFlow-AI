@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "required": ["answer", "citations", "confidence"],
+  "properties": {
+    "answer": {
+      "type": "string",
+      "description": "Synthesized answer with inline citations"
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "document": { "type": "string" },
+          "chunk_id": { "type": "string" },
+          "snippet": { "type": "string" }
+        },
+        "required": ["document", "chunk_id", "snippet"]
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  }
+}

@@ -1,0 +1,20 @@
+cases:
+  - name: basic_knowledge_lookup
+    input: "公司的退货政策是什么？"
+    expected:
+      must_call_tools: ["rag.search_kb"]
+      output_must_contain: ["citations"]
+      confidence_min: 0.5
+
+  - name: no_knowledge_available
+    input: "量子计算的最新进展是什么？"
+    expected:
+      output_must_contain: ["confidence"]
+      confidence_max: 0.3
+
+  - name: multi_source_answer
+    input: "入职流程需要准备哪些材料？"
+    expected:
+      must_call_tools: ["rag.search_kb"]
+      min_citations: 2
+      confidence_min: 0.6

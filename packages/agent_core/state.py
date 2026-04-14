@@ -14,3 +14,7 @@ class AgentState(TypedDict, total=False):
     steps_log: list[dict[str, Any]]
     final_output: str
     error: str | None
+    # Skill fields
+    skill_name: str | None
+    skill_context: dict[str, Any] | None
+    skill_input: dict[str, Any] | None

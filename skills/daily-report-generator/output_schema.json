@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "required": ["report_title", "period", "sections"],
+  "properties": {
+    "report_title": {
+      "type": "string",
+      "description": "Title of the report"
+    },
+    "period": {
+      "type": "string",
+      "description": "Time period covered"
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "content": { "type": "string" },
+          "metrics": {
+            "type": "object",
+            "additionalProperties": { "type": "number" }
+          }
+        },
+        "required": ["title", "content"]
+      }
+    },
+    "file_path": {
+      "type": "string",
+      "description": "Path to the generated report file"
+    }
+  }
+}

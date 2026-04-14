@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FileText, Wrench, ScrollText } from "lucide-react";
 import type { RunStep, SearchResult } from "@/types";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 type Tab = "evidence" | "tools" | "logs";
 
@@ -14,11 +15,12 @@ interface EvidencePanelProps {
 
 export function EvidencePanel({ steps, evidence = [] }: EvidencePanelProps) {
   const [tab, setTab] = useState<Tab>("evidence");
+  const t = useTranslations("evidence");
 
   const tabs: { key: Tab; label: string; icon: React.ElementType }[] = [
-    { key: "evidence", label: "Evidence", icon: FileText },
-    { key: "tools", label: "Tools", icon: Wrench },
-    { key: "logs", label: "Logs", icon: ScrollText },
+    { key: "evidence", label: t("evidence"), icon: FileText },
+    { key: "tools", label: t("tools"), icon: Wrench },
+    { key: "logs", label: t("logs"), icon: ScrollText },
   ];
 
   return (
@@ -51,21 +53,21 @@ export function EvidencePanel({ steps, evidence = [] }: EvidencePanelProps) {
               </div>
             ))
           ) : (
-            <p className="text-xs text-gray-500 text-center py-8">No evidence retrieved yet</p>
+            <p className="text-xs text-gray-500 text-center py-8">{t("noEvidence")}</p>
           )
         )}
         {tab === "tools" && (
           steps.filter(s => s.node_name === "Executor").length > 0 ? (
             steps.filter(s => s.node_name === "Executor").map((s, i) => (
               <div key={i} className="bg-surface p-3 rounded-lg border border-border">
-                <p className="text-xs font-medium text-gray-300 mb-1">Tool Invocation</p>
+                <p className="text-xs font-medium text-gray-300 mb-1">{t("toolInvocation")}</p>
                 <pre className="text-xs text-gray-400 overflow-x-auto">
                   {JSON.stringify(s.output_data, null, 2)}
                 </pre>
               </div>
             ))
           ) : (
-            <p className="text-xs text-gray-500 text-center py-8">No tool invocations yet</p>
+            <p className="text-xs text-gray-500 text-center py-8">{t("noTools")}</p>
           )
         )}
         {tab === "logs" && (
@@ -73,14 +75,12 @@ export function EvidencePanel({ steps, evidence = [] }: EvidencePanelProps) {
             steps.map((s, i) => (
               <div key={i} className="text-xs font-mono text-gray-400 py-1 border-b border-border/50">
                 <span className="text-gray-500">[{s.node_name}]</span>{" "}
-                <span className={s.status === "failed" ? "text-red-400" : "text-gray-300"}>
-                  {s.status}
-                </span>
+                <span className={s.status === "failed" ? "text-red-400" : "text-gray-300"}>{s.status}</span>
                 {s.error_message && <span className="text-red-400"> - {s.error_message}</span>}
               </div>
             ))
           ) : (
-            <p className="text-xs text-gray-500 text-center py-8">No logs yet</p>
+            <p className="text-xs text-gray-500 text-center py-8">{t("noLogs")}</p>
           )
         )}
       </div>

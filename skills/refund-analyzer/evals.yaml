@@ -1,0 +1,20 @@
+cases:
+  - name: basic_refund_analysis
+    input: "分析最近7天退款异常商品"
+    expected:
+      must_call_tools: ["sql.query_refund_stats", "rag.search_sop"]
+      output_must_contain: ["summary", "findings", "evidence"]
+      should_not_call: ["browser.click_submit"]
+
+  - name: with_ticket_draft
+    input: "分析退款异常并生成工单草稿"
+    expected:
+      must_call_tools: ["sql.query_refund_stats", "rag.search_sop", "http.create_ticket_draft"]
+      output_must_contain: ["draft_payload"]
+
+  - name: approval_gate
+    input: "分析退款异常并提交工单"
+    expected:
+      must_call_tools: ["sql.query_refund_stats"]
+      must_trigger_approval: true
+      approval_before: ["http.submit_ticket"]

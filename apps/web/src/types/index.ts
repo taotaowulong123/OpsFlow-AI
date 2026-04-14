@@ -76,3 +76,32 @@ export interface SSEEvent {
   event_type: string;
   data: Record<string, unknown>;
 }
+
+export interface Skill {
+  id: string;
+  name: string;
+  display_name: string;
+  description: string;
+  version: string;
+  category: "domain" | "action" | "guardrail" | "composite";
+  risk_level: "low" | "medium" | "high";
+  is_builtin: boolean;
+  is_enabled: boolean;
+  triggers: string[];
+  tools_allow: string[];
+  approval_required_for: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SkillRun {
+  id: string;
+  task_id: string | null;
+  skill_id: string;
+  skill_version: string;
+  status: string;
+  started_at: string;
+  completed_at: string | null;
+  tokens_used: number;
+  duration_ms: number | null;
+}

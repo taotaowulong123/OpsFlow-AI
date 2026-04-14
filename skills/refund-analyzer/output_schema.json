@@ -1,0 +1,59 @@
+{
+  "type": "object",
+  "required": ["summary", "findings", "evidence", "next_actions"],
+  "properties": {
+    "summary": {
+      "type": "string",
+      "description": "High-level summary of the refund analysis"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_id": { "type": "string" },
+          "item_name": { "type": "string" },
+          "refund_rate": { "type": "number" },
+          "refund_count": { "type": "integer" },
+          "anomaly_type": { "type": "string" },
+          "severity": { "type": "string", "enum": ["low", "medium", "high"] }
+        },
+        "required": ["item_id", "refund_rate", "anomaly_type"]
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source": { "type": "string" },
+          "snippet": { "type": "string" },
+          "relevance": { "type": "number" }
+        },
+        "required": ["source", "snippet"]
+      }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": { "type": "string" },
+          "priority": { "type": "string", "enum": ["low", "medium", "high"] },
+          "requires_approval": { "type": "boolean" }
+        },
+        "required": ["action", "priority"]
+      }
+    },
+    "draft_payload": {
+      "type": "object",
+      "description": "Optional ticket draft content",
+      "properties": {
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "priority": { "type": "string" },
+        "description": { "type": "string" }
+      }
+    }
+  }
+}

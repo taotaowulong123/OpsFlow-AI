@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Upload, Search, Trash2, FileText, File } from "lucide-react";
+import { Upload, Search, Trash2, FileText } from "lucide-react";
 import type { Document, SearchResult } from "@/types";
 import { cn, formatDate } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 const mockDocs: Document[] = [
   { id: "1", filename: "api-reference.pdf", file_type: "pdf", file_size: 245000, status: "indexed", created_at: "2026-04-14T10:00:00Z" },
@@ -22,48 +23,41 @@ export default function KnowledgePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults] = useState<SearchResult[]>([]);
   const [dragOver, setDragOver] = useState(false);
+  const t = useTranslations("knowledge");
 
   function handleDrop(e: React.DragEvent) {
     e.preventDefault();
     setDragOver(false);
-    // Would call uploadDocument here
   }
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
-        <h1 className="text-xl font-semibold mb-1">Knowledge Base</h1>
-        <p className="text-sm text-gray-500">Upload documents and search your knowledge</p>
+        <h1 className="text-xl font-semibold mb-1">{t("title")}</h1>
+        <p className="text-sm text-gray-500">{t("subtitle")}</p>
       </div>
-
-      {/* Upload area */}
       <div
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
-        className={cn(
-          "border-2 border-dashed rounded-lg p-8 text-center transition-colors",
-          dragOver ? "border-primary bg-primary/5" : "border-border"
-        )}
+        className={cn("border-2 border-dashed rounded-lg p-8 text-center transition-colors", dragOver ? "border-primary bg-primary/5" : "border-border")}
       >
         <Upload className="w-8 h-8 text-gray-500 mx-auto mb-3" />
-        <p className="text-sm text-gray-400 mb-1">Drag and drop files here</p>
-        <p className="text-xs text-gray-500">PDF, Markdown, DOCX, TXT</p>
+        <p className="text-sm text-gray-400 mb-1">{t("dragDrop")}</p>
+        <p className="text-xs text-gray-500">{t("fileTypes")}</p>
       </div>
-
-      {/* Documents table */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
-          <h2 className="text-sm font-medium">Documents</h2>
+          <h2 className="text-sm font-medium">{t("documents")}</h2>
         </div>
         <table className="w-full">
           <thead>
             <tr className="text-xs text-gray-500 border-b border-border">
-              <th className="text-left px-4 py-2 font-medium">Filename</th>
-              <th className="text-left px-4 py-2 font-medium">Type</th>
-              <th className="text-left px-4 py-2 font-medium">Size</th>
-              <th className="text-left px-4 py-2 font-medium">Status</th>
-              <th className="text-left px-4 py-2 font-medium">Date</th>
+              <th className="text-left px-4 py-2 font-medium">{t("filename")}</th>
+              <th className="text-left px-4 py-2 font-medium">{t("type")}</th>
+              <th className="text-left px-4 py-2 font-medium">{t("size")}</th>
+              <th className="text-left px-4 py-2 font-medium">{t("status")}</th>
+              <th className="text-left px-4 py-2 font-medium">{t("date")}</th>
               <th className="px-4 py-2"></th>
             </tr>
           </thead>
@@ -77,12 +71,7 @@ export default function KnowledgePage() {
                 <td className="px-4 py-2.5 text-xs text-gray-400 uppercase">{doc.file_type}</td>
                 <td className="px-4 py-2.5 text-xs text-gray-400">{formatSize(doc.file_size)}</td>
                 <td className="px-4 py-2.5">
-                  <span className={cn(
-                    "text-xs px-2 py-0.5 rounded-full",
-                    doc.status === "indexed" ? "bg-green-400/10 text-green-400" : "bg-yellow-400/10 text-yellow-400"
-                  )}>
-                    {doc.status}
-                  </span>
+                  <span className={cn("text-xs px-2 py-0.5 rounded-full", doc.status === "indexed" ? "bg-green-400/10 text-green-400" : "bg-yellow-400/10 text-yellow-400")}>{doc.status}</span>
                 </td>
                 <td className="px-4 py-2.5 text-xs text-gray-500">{formatDate(doc.created_at)}</td>
                 <td className="px-4 py-2.5">
@@ -95,20 +84,13 @@ export default function KnowledgePage() {
           </tbody>
         </table>
       </div>
-
-      {/* Search test */}
       <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
-        <h2 className="text-sm font-medium">Search Knowledge</h2>
+        <h2 className="text-sm font-medium">{t("searchKnowledge")}</h2>
         <div className="flex gap-2">
-          <input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search your documents..."
-            className="flex-1 bg-surface border border-border rounded-lg px-4 py-2 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-primary"
-          />
+          <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder={t("searchPlaceholder")} className="flex-1 bg-surface border border-border rounded-lg px-4 py-2 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-primary" />
           <button className="px-4 py-2 bg-primary text-white text-sm rounded-lg hover:bg-primary/80 transition-colors flex items-center gap-2">
             <Search className="w-4 h-4" />
-            Search
+            {t("search")}
           </button>
         </div>
         {searchResults.length > 0 ? (
@@ -124,7 +106,7 @@ export default function KnowledgePage() {
             ))}
           </div>
         ) : (
-          <p className="text-xs text-gray-500 text-center py-4">Enter a query to search</p>
+          <p className="text-xs text-gray-500 text-center py-4">{t("searchPrompt")}</p>
         )}
       </div>
     </div>
