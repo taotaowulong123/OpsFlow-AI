@@ -4,6 +4,7 @@ export type TaskStatus =
   | "retrieving"
   | "executing"
   | "reviewing"
+  | "running"
   | "waiting_approval"
   | "completed"
   | "failed";
@@ -20,22 +21,24 @@ export interface Task {
 export interface TaskRun {
   id: string;
   task_id: string;
-  status: TaskStatus;
+  status: TaskStatus | "running";
   started_at: string;
   finished_at: string | null;
-  total_tokens: number;
+  total_tokens: number | null;
+  total_cost?: number | null;
+  steps?: RunStep[];
 }
 
 export interface RunStep {
   id: string;
   run_id: string;
   node_name: string;
-  status: "pending" | "in_progress" | "completed" | "failed" | "waiting_approval";
-  input_data: Record<string, unknown>;
-  output_data: Record<string, unknown>;
-  evidence: string[];
-  tokens_used: number;
-  latency_ms: number;
+  status: "pending" | "running" | "in_progress" | "completed" | "failed" | "waiting_approval";
+  input_data: Record<string, unknown> | null;
+  output_data: Record<string, unknown> | null;
+  evidence: Record<string, unknown> | string[] | null;
+  tokens_used: number | null;
+  latency_ms: number | null;
   error_message: string | null;
 }
 

@@ -12,10 +12,16 @@ const nodeIcons: Record<string, React.ElementType> = {
   Executor: Play,
   Reviewer: CheckCircle,
   Approver: Shield,
+  planning: Brain,
+  retrieving: Search,
+  executing: Play,
+  reviewer: CheckCircle,
+  approver: Shield,
 };
 
 function StatusIndicator({ status }: { status: string }) {
   switch (status) {
+    case "running":
     case "in_progress":
       return <Loader2 className="w-4 h-4 text-blue-400 animate-spin" />;
     case "completed":
@@ -33,6 +39,10 @@ export function StepCard({ step }: { step: RunStep }) {
   const [expanded, setExpanded] = useState(false);
   const Icon = nodeIcons[step.node_name] || Play;
   const t = useTranslations("evidence");
+  const inputData = step.input_data ?? {};
+  const outputData = step.output_data ?? {};
+  const latencyMs = step.latency_ms ?? 0;
+  const tokensUsed = step.tokens_used ?? 0;
 
   return (
     <div className="bg-panel border border-border rounded-lg overflow-hidden">
@@ -43,11 +53,11 @@ export function StepCard({ step }: { step: RunStep }) {
         <Icon className="w-4 h-4 text-gray-400" />
         <span className="flex-1 text-sm font-medium">{step.node_name}</span>
         <StatusIndicator status={step.status} />
-        {step.latency_ms > 0 && (
-          <span className="text-xs text-gray-500">{formatDuration(step.latency_ms)}</span>
+        {latencyMs > 0 && (
+          <span className="text-xs text-gray-500">{formatDuration(latencyMs)}</span>
         )}
-        {step.tokens_used > 0 && (
-          <span className="text-xs text-gray-500">{formatTokens(step.tokens_used)} tok</span>
+        {tokensUsed > 0 && (
+          <span className="text-xs text-gray-500">{formatTokens(tokensUsed)} tok</span>
         )}
         {expanded ? <ChevronDown className="w-4 h-4 text-gray-500" /> : <ChevronRight className="w-4 h-4 text-gray-500" />}
       </button>
@@ -56,19 +66,19 @@ export function StepCard({ step }: { step: RunStep }) {
           {step.error_message && (
             <p className="text-xs text-red-400 bg-red-400/10 p-2 rounded">{step.error_message}</p>
           )}
-          {Object.keys(step.output_data).length > 0 && (
+          {Object.keys(outputData).length > 0 && (
             <div>
               <p className="text-xs text-gray-500 mb-1">{t("output")}</p>
               <pre className="text-xs text-gray-300 bg-surface p-2 rounded overflow-x-auto">
-                {JSON.stringify(step.output_data, null, 2)}
+                {JSON.stringify(outputData, null, 2)}
               </pre>
             </div>
           )}
-          {Object.keys(step.input_data).length > 0 && (
+          {Object.keys(inputData).length > 0 && (
             <div>
               <p className="text-xs text-gray-500 mb-1">{t("input")}</p>
               <pre className="text-xs text-gray-300 bg-surface p-2 rounded overflow-x-auto">
-                {JSON.stringify(step.input_data, null, 2)}
+                {JSON.stringify(inputData, null, 2)}
               </pre>
             </div>
           )}

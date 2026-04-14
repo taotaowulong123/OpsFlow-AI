@@ -30,6 +30,7 @@ export function statusColor(status: string) {
       return "text-green-400";
     case "failed":
       return "text-red-400";
+    case "running":
     case "in_progress":
     case "planning":
     case "retrieving":
