@@ -37,7 +37,7 @@ export function Sidebar() {
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors",
                 active
                   ? "bg-primary/15 text-primary"
-                  : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
               )}
             >
               <Icon className="w-4 h-4" />

@@ -1,4 +1,5 @@
 import json
+import os
 import time
 from typing import Any
 
@@ -29,7 +30,11 @@ async def reviewer_node(state: AgentState) -> dict[str, Any]:
         "tool_results": tool_results,
     }, default=str)
 
-    llm = ChatOpenAI(model="gpt-4o", temperature=0)
+    llm = ChatOpenAI(
+        model=os.getenv("LLM_MODEL", "gpt-4o"),
+        temperature=0,
+        base_url=os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+    )
     response = await llm.ainvoke([
         {"role": "system", "content": REVIEWER_SYSTEM_PROMPT},
         {"role": "user", "content": review_input},

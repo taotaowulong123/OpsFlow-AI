@@ -1,3 +1,4 @@
+import os
 from dataclasses import dataclass
 from typing import Any
 
@@ -18,7 +19,10 @@ class KnowledgeRetriever:
     """Retrieves relevant document chunks using pgvector similarity search."""
 
     def __init__(self, embedding_model: str = "text-embedding-3-small"):
-        self._embeddings = OpenAIEmbeddings(model=embedding_model)
+        self._embeddings = OpenAIEmbeddings(
+            model=embedding_model,
+            base_url=os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+        )
 
     async def retrieve(
         self,

@@ -2,17 +2,26 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
+# Copy requirements
 COPY apps/api/requirements.txt .
+
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY packages/ /app/packages/
-COPY apps/api/ /app/
+# Copy application code
+COPY apps/api /app
+COPY packages /packages
+COPY workers /workers
+COPY skills /skills
 
-ENV PYTHONPATH=/app
+# Set Python path
+ENV PYTHONPATH=/app:/packages:/workers
 
 EXPOSE 8000
 
