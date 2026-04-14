@@ -1,0 +1,78 @@
+export type TaskStatus =
+  | "pending"
+  | "planning"
+  | "retrieving"
+  | "executing"
+  | "reviewing"
+  | "waiting_approval"
+  | "completed"
+  | "failed";
+
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  status: TaskStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TaskRun {
+  id: string;
+  task_id: string;
+  status: TaskStatus;
+  started_at: string;
+  finished_at: string | null;
+  total_tokens: number;
+}
+
+export interface RunStep {
+  id: string;
+  run_id: string;
+  node_name: string;
+  status: "pending" | "in_progress" | "completed" | "failed" | "waiting_approval";
+  input_data: Record<string, unknown>;
+  output_data: Record<string, unknown>;
+  evidence: string[];
+  tokens_used: number;
+  latency_ms: number;
+  error_message: string | null;
+}
+
+export interface Document {
+  id: string;
+  filename: string;
+  file_type: string;
+  file_size: number;
+  status: string;
+  created_at: string;
+}
+
+export interface Tool {
+  id: string;
+  name: string;
+  description: string;
+  tool_type: string;
+  enabled: boolean;
+  risk_level: "low" | "medium" | "high";
+}
+
+export interface Approval {
+  id: string;
+  run_id: string;
+  step_id: string;
+  status: "pending" | "approved" | "rejected";
+  reason: string;
+}
+
+export interface SearchResult {
+  content: string;
+  score: number;
+  document_name: string;
+  chunk_index: number;
+}
+
+export interface SSEEvent {
+  event_type: string;
+  data: Record<string, unknown>;
+}

@@ -1,0 +1,76 @@
+{
+  "tasks": [
+    {
+      "id": "demo-task-001",
+      "title": "分析近7天退款异常商品",
+      "description": "帮我分析最近 7 天退款率异常的商品，结合售后 SOP 给出处理建议，并生成工单草稿。",
+      "status": "completed",
+      "created_at": "2025-04-13T10:00:00Z",
+      "updated_at": "2025-04-13T10:05:32Z"
+    },
+    {
+      "id": "demo-task-002",
+      "title": "生成新员工IT开通申请",
+      "description": "根据入职流程 SOP，帮我生成新员工 IT 系统开通申请表草稿。",
+      "status": "waiting_approval",
+      "created_at": "2025-04-14T09:00:00Z",
+      "updated_at": "2025-04-14T09:03:15Z"
+    },
+    {
+      "id": "demo-task-003",
+      "title": "创建蓝牙耳机售后工单",
+      "description": "客户反馈蓝牙耳机 Pro 连接不稳定，请根据售后 SOP 创建处理工单。",
+      "status": "pending",
+      "created_at": "2025-04-15T08:30:00Z",
+      "updated_at": "2025-04-15T08:30:00Z"
+    }
+  ],
+  "stats": {
+    "total_tasks": 47,
+    "success_rate": 89.4,
+    "avg_duration_seconds": 32,
+    "total_tokens": 284500
+  },
+  "tools": [
+    {
+      "id": "tool-sql",
+      "name": "SQL 数据查询",
+      "description": "查询业务数据库，支持 SELECT 查询",
+      "tool_type": "sql",
+      "enabled": true,
+      "risk_level": "medium"
+    },
+    {
+      "id": "tool-http",
+      "name": "HTTP 请求",
+      "description": "调用外部 API 接口",
+      "tool_type": "http",
+      "enabled": true,
+      "risk_level": "low"
+    },
+    {
+      "id": "tool-browser",
+      "name": "浏览器自动化",
+      "description": "使用 Playwright 执行浏览器操作",
+      "tool_type": "browser",
+      "enabled": true,
+      "risk_level": "high"
+    },
+    {
+      "id": "tool-file",
+      "name": "文件生成",
+      "description": "生成 Markdown、CSV 等格式的报告文件",
+      "tool_type": "file",
+      "enabled": true,
+      "risk_level": "low"
+    },
+    {
+      "id": "tool-knowledge",
+      "name": "知识库检索",
+      "description": "检索知识库中的文档和 SOP",
+      "tool_type": "knowledge",
+      "enabled": true,
+      "risk_level": "low"
+    }
+  ]
+}
