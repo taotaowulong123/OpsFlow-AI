@@ -44,7 +44,10 @@ async def run_task(task_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
         run = await execute_task(task_id, db)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
-    return run
+    result = await db.execute(
+        select(TaskRun).options(selectinload(TaskRun.steps)).where(TaskRun.id == run.id)
+    )
+    return result.scalar_one()
 
 
 @router.get("/{task_id}/stream")

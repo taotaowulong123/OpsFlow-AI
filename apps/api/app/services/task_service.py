@@ -2,9 +2,9 @@ import asyncio
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.database import async_session
 from app.models.task import Task, TaskRun, RunStep, TaskStatus
 from app.services.sse import event_bus
 
@@ -20,56 +20,61 @@ async def execute_task(task_id: uuid.UUID, db: AsyncSession) -> TaskRun:
     await db.commit()
     await db.refresh(run)
 
-    asyncio.create_task(_run_agent(run.id, task, db))
+    asyncio.create_task(_run_agent(run.id, task.id))
     return run
 
 
-async def _run_agent(run_id: uuid.UUID, task: Task, db: AsyncSession) -> None:
-    try:
-        await event_bus.publish_event(
-            str(task.id), "step_start", {"run_id": str(run_id), "node": "planning"}
-        )
+async def _run_agent(run_id: uuid.UUID, task_id: uuid.UUID) -> None:
+    async with async_session() as db:
+        task = await db.get(Task, task_id)
+        if not task:
+            return
 
-        step = RunStep(
-            run_id=run_id,
-            node_name="planning",
-            status="running",
-        )
-        db.add(step)
-        await db.commit()
-        await db.refresh(step)
+        try:
+            await event_bus.publish_event(
+                str(task.id), "step_start", {"run_id": str(run_id), "node": "planning"}
+            )
 
-        # Placeholder: integrate with packages.agent_core graph here
-        await asyncio.sleep(0.5)
+            step = RunStep(
+                run_id=run_id,
+                node_name="planning",
+                status="running",
+            )
+            db.add(step)
+            await db.commit()
+            await db.refresh(step)
 
-        step.status = "completed"
-        step.finished_at = datetime.now(timezone.utc)
-        step.output_data = {"plan": f"Generated plan for: {task.title}"}
-        await db.commit()
+            # Placeholder: integrate with packages.agent_core graph here
+            await asyncio.sleep(0.5)
 
-        await event_bus.publish_event(
-            str(task.id), "step_complete", {"run_id": str(run_id), "node": "planning"}
-        )
+            step.status = "completed"
+            step.finished_at = datetime.now(timezone.utc)
+            step.output_data = {"plan": f"Generated plan for: {task.title}"}
+            await db.commit()
 
-        run = await db.get(TaskRun, run_id)
-        if run:
-            run.status = "completed"
-            run.finished_at = datetime.now(timezone.utc)
-        task.status = TaskStatus.completed
-        await db.commit()
+            await event_bus.publish_event(
+                str(task.id), "step_complete", {"run_id": str(run_id), "node": "planning"}
+            )
 
-        await event_bus.publish_event(
-            str(task.id), "complete", {"run_id": str(run_id), "status": "completed"}
-        )
+            run = await db.get(TaskRun, run_id)
+            if run:
+                run.status = "completed"
+                run.finished_at = datetime.now(timezone.utc)
+            task.status = TaskStatus.completed
+            await db.commit()
 
-    except Exception as e:
-        run = await db.get(TaskRun, run_id)
-        if run:
-            run.status = "failed"
-            run.finished_at = datetime.now(timezone.utc)
-        task.status = TaskStatus.failed
-        await db.commit()
+            await event_bus.publish_event(
+                str(task.id), "complete", {"run_id": str(run_id), "status": "completed"}
+            )
 
-        await event_bus.publish_event(
-            str(task.id), "error", {"run_id": str(run_id), "error": str(e)}
-        )
+        except Exception as e:
+            run = await db.get(TaskRun, run_id)
+            if run:
+                run.status = "failed"
+                run.finished_at = datetime.now(timezone.utc)
+            task.status = TaskStatus.failed
+            await db.commit()
+
+            await event_bus.publish_event(
+                str(task.id), "error", {"run_id": str(run_id), "error": str(e)}
+            )

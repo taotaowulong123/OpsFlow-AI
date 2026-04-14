@@ -13,15 +13,15 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 // Tasks
 export function createTask(title: string, description: string) {
-  return request<Task>("/api/tasks", { method: "POST", body: JSON.stringify({ title, description }) });
+  return request<Task>("/tasks", { method: "POST", body: JSON.stringify({ title, description }) });
 }
 
 export function getTasks() {
-  return request<Task[]>("/api/tasks");
+  return request<Task[]>("/tasks");
 }
 
 export function getTask(id: string) {
-  return request<Task>(`/api/tasks/${id}`);
+  return request<Task>(`/tasks/${id}`);
 }
 
 export function runTask(taskId: string): EventSource {
@@ -56,19 +56,19 @@ export function getTools() {
 
 // Runs
 export function getRuns() {
-  return request<TaskRun[]>("/api/runs");
+  return request<TaskRun[]>("/runs");
 }
 
 export function getRun(id: string) {
-  return request<TaskRun>(`/api/runs/${id}`);
+  return request<TaskRun>(`/runs/${id}`);
 }
 
 export function getRunSteps(runId: string) {
-  return request<RunStep[]>(`/api/runs/${runId}/steps`);
+  return request<RunStep[]>(`/runs/${runId}/steps`);
 }
 
 export function approveRun(runId: string, stepId: string, approved: boolean, reason?: string) {
-  return request<void>(`/api/runs/${runId}/approve`, {
+  return request<void>(`/runs/${runId}/approve`, {
     method: "POST",
     body: JSON.stringify({ step_id: stepId, approved, reason }),
   });

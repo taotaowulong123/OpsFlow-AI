@@ -1,29 +1,97 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BarChart3, CheckCircle, Clock, Coins, Send } from "lucide-react";
+import { getRuns, getTasks } from "@/lib/api";
 import { cn, formatDate, statusColor } from "@/lib/utils";
-import type { Task } from "@/types";
+import type { Task, TaskRun } from "@/types";
 import { useTranslations } from "next-intl";
 
-const mockTasks: Task[] = [
-  { id: "1", title: "Generate quarterly report", description: "", status: "completed", created_at: "2026-04-15T09:00:00Z", updated_at: "2026-04-15T09:05:00Z" },
-  { id: "2", title: "Analyze customer feedback", description: "", status: "executing", created_at: "2026-04-15T10:00:00Z", updated_at: "2026-04-15T10:02:00Z" },
-  { id: "3", title: "Update API documentation", description: "", status: "completed", created_at: "2026-04-14T14:00:00Z", updated_at: "2026-04-14T14:08:00Z" },
-  { id: "4", title: "Deploy staging environment", description: "", status: "failed", created_at: "2026-04-14T11:00:00Z", updated_at: "2026-04-14T11:03:00Z" },
-  { id: "5", title: "Run security audit", description: "", status: "waiting_approval", created_at: "2026-04-14T08:00:00Z", updated_at: "2026-04-14T08:10:00Z" },
-  { id: "6", title: "Optimize database queries", description: "", status: "completed", created_at: "2026-04-13T16:00:00Z", updated_at: "2026-04-13T16:12:00Z" },
-];
+function formatCompactNumber(value: number) {
+  return new Intl.NumberFormat("en", {
+    notation: "compact",
+    maximumFractionDigits: value >= 1_000_000 ? 1 : 0,
+  }).format(value);
+}
+
+function formatAverageDuration(runs: TaskRun[]) {
+  const completedRuns = runs.filter((run) => run.started_at && run.finished_at);
+  if (completedRuns.length === 0) return "--";
+
+  const totalMs = completedRuns.reduce((sum, run) => {
+    const startedAt = new Date(run.started_at).getTime();
+    const finishedAt = new Date(run.finished_at as string).getTime();
+    return sum + Math.max(finishedAt - startedAt, 0);
+  }, 0);
+
+  const averageMs = totalMs / completedRuns.length;
+  if (averageMs < 1000) return `${Math.round(averageMs)}ms`;
+  return `${(averageMs / 1000).toFixed(1)}s`;
+}
 
 export default function DashboardPage() {
   const [quickInput, setQuickInput] = useState("");
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [runs, setRuns] = useState<TaskRun[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const t = useTranslations("dashboard");
 
+  useEffect(() => {
+    let active = true;
+
+    async function loadDashboard() {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const [taskData, runData] = await Promise.all([getTasks(), getRuns()]);
+        if (!active) return;
+        setTasks(taskData);
+        setRuns(runData);
+      } catch (err) {
+        if (!active) return;
+        const message = err instanceof Error ? err.message : "Failed to load dashboard";
+        setError(message);
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadDashboard();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const recentTasks = useMemo(() => tasks.slice(0, 6), [tasks]);
+
+  const finishedRuns = useMemo(
+    () => runs.filter((run) => run.status === "completed" || run.status === "failed"),
+    [runs]
+  );
+
+  const completedRuns = useMemo(
+    () => finishedRuns.filter((run) => run.status === "completed"),
+    [finishedRuns]
+  );
+
+  const successRate =
+    finishedRuns.length > 0 ? `${Math.round((completedRuns.length / finishedRuns.length) * 100)}%` : "--";
+
+  const totalTokens = useMemo(
+    () => runs.reduce((sum, run) => sum + (run.total_tokens ?? 0), 0),
+    [runs]
+  );
+
   const stats = [
-    { label: t("totalTasks"), value: "128", icon: BarChart3, color: "text-primary" },
-    { label: t("successRate"), value: "94%", icon: CheckCircle, color: "text-green-400" },
-    { label: t("avgDuration"), value: "4.2s", icon: Clock, color: "text-blue-400" },
-    { label: t("totalTokens"), value: "1.2M", icon: Coins, color: "text-yellow-400" },
+    { label: t("totalTasks"), value: loading ? "--" : `${tasks.length}`, icon: BarChart3, color: "text-primary" },
+    { label: t("successRate"), value: loading ? "--" : successRate, icon: CheckCircle, color: "text-green-400" },
+    { label: t("avgDuration"), value: loading ? "--" : formatAverageDuration(runs), icon: Clock, color: "text-blue-400" },
+    { label: t("totalTokens"), value: loading ? "--" : formatCompactNumber(totalTokens), icon: Coins, color: "text-yellow-400" },
   ];
 
   return (
@@ -31,6 +99,7 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-xl font-semibold mb-1">{t("title")}</h1>
         <p className="text-sm text-gray-500">{t("subtitle")}</p>
+        {error ? <p className="mt-2 text-sm text-red-400">{error}</p> : null}
       </div>
 
       <div className="flex gap-2">
@@ -63,14 +132,20 @@ export default function DashboardPage() {
           <h2 className="text-sm font-medium">{t("recentTasks")}</h2>
         </div>
         <div className="divide-y divide-border">
-          {mockTasks.map((task) => (
-            <div key={task.id} className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors">
-              <div className={cn("w-2 h-2 rounded-full", statusColor(task.status).replace("text-", "bg-"))} />
-              <span className="flex-1 text-sm">{task.title}</span>
-              <span className={cn("text-xs capitalize", statusColor(task.status))}>{task.status.replace("_", " ")}</span>
-              <span className="text-xs text-gray-500">{formatDate(task.created_at)}</span>
-            </div>
-          ))}
+          {loading ? (
+            <div className="px-4 py-6 text-sm text-gray-500">Loading tasks...</div>
+          ) : recentTasks.length > 0 ? (
+            recentTasks.map((task) => (
+              <div key={task.id} className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors">
+                <div className={cn("w-2 h-2 rounded-full", statusColor(task.status).replace("text-", "bg-"))} />
+                <span className="flex-1 text-sm">{task.title}</span>
+                <span className={cn("text-xs capitalize", statusColor(task.status))}>{task.status.replace("_", " ")}</span>
+                <span className="text-xs text-gray-500">{formatDate(task.created_at)}</span>
+              </div>
+            ))
+          ) : (
+            <div className="px-4 py-6 text-sm text-gray-500">No tasks yet.</div>
+          )}
         </div>
       </div>
     </div>
