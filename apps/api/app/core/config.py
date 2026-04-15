@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     OPENAI_BASE_URL: str = "https://api.openai.com/v1"
     UPLOAD_DIR: str = str(UPLOADS_DIR)
     LLM_MODEL: str = "gpt-4o"
+    EMBEDDING_MODEL: str = "text-embedding-3-small"
+    EMBEDDING_API_KEY: str = ""
+    EMBEDDING_BASE_URL: str = "https://api.openai.com/v1"
 
     model_config = {
         "env_file": ENV_FILE,

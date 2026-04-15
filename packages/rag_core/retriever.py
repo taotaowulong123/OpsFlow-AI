@@ -1,10 +1,11 @@
-import os
 from dataclasses import dataclass
 from typing import Any
 
 from langchain_openai import OpenAIEmbeddings
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.config import settings
 
 
 @dataclass
@@ -18,10 +19,11 @@ class SearchResult:
 class KnowledgeRetriever:
     """Retrieves relevant document chunks using pgvector similarity search."""
 
-    def __init__(self, embedding_model: str = "text-embedding-3-small"):
+    def __init__(self, embedding_model: str | None = None):
         self._embeddings = OpenAIEmbeddings(
-            model=embedding_model,
-            base_url=os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+            model=embedding_model or settings.EMBEDDING_MODEL,
+            api_key=settings.EMBEDDING_API_KEY or settings.OPENAI_API_KEY,
+            base_url=settings.EMBEDDING_BASE_URL or settings.OPENAI_BASE_URL,
         )
 
     async def retrieve(

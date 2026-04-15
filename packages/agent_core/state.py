@@ -4,6 +4,7 @@ from typing import Any, TypedDict
 class AgentState(TypedDict, total=False):
     task_id: str
     task_description: str
+    db_session: Any
     plan: list[dict[str, Any]]
     retrieved_docs: list[dict[str, Any]]
     tool_results: list[dict[str, Any]]

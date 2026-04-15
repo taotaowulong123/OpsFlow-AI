@@ -1,10 +1,10 @@
 import json
-import os
 import time
 from typing import Any
 
 from langchain_openai import ChatOpenAI
 
+from app.core.config import settings
 from packages.agent_core.state import AgentState
 from packages.shared.types import NodeName, TaskStatus
 
@@ -21,9 +21,10 @@ async def planner_node(state: AgentState) -> dict[str, Any]:
     task_description = state.get("task_description", "")
 
     llm = ChatOpenAI(
-        model=os.getenv("LLM_MODEL", "gpt-4o"),
+        model=settings.LLM_MODEL,
         temperature=0,
-        base_url=os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+        api_key=settings.OPENAI_API_KEY,
+        base_url=settings.OPENAI_BASE_URL,
     )
     response = await llm.ainvoke([
         {"role": "system", "content": PLANNER_SYSTEM_PROMPT},
